@@ -13,15 +13,17 @@ from tkinter import filedialog
 from shutil import copyfile
 from re import *
 import Dictionary
-
+import os
+import shutil
 class GUI:
+    
     entry=" "
     projectPath="new path"    
     listOfFileNames=[]
     transformDict = {}
     unresolvedDict={}
     window = Tk()
-    
+
     def __init__(self):
         pass
     def openFiles(self):    
@@ -65,7 +67,16 @@ class GUI:
     
     def transferFiles(self):                        
 #        print(self.transformDict)
-        for key, val in self.transformDict.items():
+#        TecnomatixDictionary={'Conveyor':dir_path+'\TuneData'+'Conveyor.xml'}
+#        TecnomatixDictionary['Device']=os.path.normpath(dir_path+'\XMLFiles' +'\TuneData'+'Device.xml')
+#   
+#        src=dir_path+'\XMLFiles' +'\TuneData'+'Device.xml'
+#        dst=os.path.normpath("C:\\Users\\vikt-\\Desktop\\conv\\TuneData.xml")
+                
+        for key, val in self.transformDict.items():            
+            source=key.encode('unicode-escape')
+            destination=self.projectPath.encode('unicode-escape')           
+            shutil.copy(source , destination)
             
             print (key + " is " + val)
         
