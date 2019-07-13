@@ -10,6 +10,7 @@ Actual Tasks:
 import shutil
 from tkinter import *
 from tkinter import filedialog
+from tkinter import ttk
 from shutil import copyfile
 from re import *
 import Dictionary
@@ -36,7 +37,7 @@ class GUI:
     
     def browseFolder(self):    
         self.projectPath= filedialog.askdirectory()  
- #       print(self.projectPath)
+        
     def parseEntry(self,fileList):  
         """
     Parses file names. Creates Dictionary of files to be transfered to Tecnomatix format 
@@ -62,41 +63,43 @@ class GUI:
                     break        
             if not flag:
                 self.unresolvedDict[path]= fileName
-               # print("dont match")
-
-    
-    def transferFiles(self):                        
-#        print(self.transformDict)
-#        TecnomatixDictionary={'Conveyor':dir_path+'\TuneData'+'Conveyor.xml'}
-#        TecnomatixDictionary['Device']=os.path.normpath(dir_path+'\XMLFiles' +'\TuneData'+'Device.xml')
-#   
-#        src=dir_path+'\XMLFiles' +'\TuneData'+'Device.xml'
-#        dst=os.path.normpath("C:\\Users\\vikt-\\Desktop\\conv\\TuneData.xml")
+        if self.unresolvedDict.len!=0:
+            self.defineMapping()
                 
+    
+    def transferFiles(self):            
+            
         for key, val in self.transformDict.items():            
             source=key.encode('unicode-escape')
             destination=self.projectPath.encode('unicode-escape')           
-            shutil.copy(source , destination)
-            
-            print (key + " is " + val)
-        
+            shutil.copy(source , destination)            
+            print (key + " is " + val)       
        
-        print("transformEntered")     
-    def clearUnresolvedFiles(self):
-        self.unresolvedDict={}
         
+    def defineMapping(self):
+        print("DefineMapping")
+        pass
+        
+    
+    def clearUnresolvedFiles(self):
+        self.unresolvedDict={}        
    
 gui = GUI() 
 gui.window.title("Process Simulate Transformer")
-gui.window.geometry('500x400')
+#gui.window.geometry('500x400')
 gui.lbl = Label(gui.window, text="Please select JT files to be transformed")
-gui.lbl.grid(column=0, row=0)
+gui.lbl.grid(column=0, row=0, pady=20)
+
 selectFiles = Button(gui.window, text="Select Files", command=gui.openFiles)
 selectDirectory = Button(gui.window, text="Choose directory", command=gui.browseFolder)
 performTransformation= Button(gui.window, text="Transform", command=gui.transferFiles)
-selectFiles.grid(column=0, row=1)
-selectDirectory.grid(column=0, row=2)
-performTransformation.grid(column=0, row=3)
+selectFiles.grid(column=0, row=1,sticky=W, pady=5, padx=10)
+selectDirectory.grid(column=0, row=2,sticky=W, pady=5, padx=10)
+performTransformation.grid(column=0, row=3,sticky=W, pady=5, padx=10)
+mappingEntry = Entry()
+
+mappingEntry.grid(column=2, row=1, sticky=W, pady=0, padx=10)
+
 print(gui.projectPath)
 
 gui.window.mainloop()
