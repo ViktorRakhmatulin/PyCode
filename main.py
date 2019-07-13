@@ -63,42 +63,54 @@ class GUI:
                     break        
             if not flag:
                 self.unresolvedDict[path]= fileName
-        if self.unresolvedDict.len!=0:
-            self.defineMapping()
-                
+        if len(self.unresolvedDict)!=0:
+            self.defineMapping()                
     
-    def transferFiles(self):            
-            
+    def transferFiles(self): 
         for key, val in self.transformDict.items():            
             source=key.encode('unicode-escape')
             destination=self.projectPath.encode('unicode-escape')           
             shutil.copy(source , destination)            
-            print (key + " is " + val)       
-       
+            print (key + " is " + val)             
+         
+    def defineMapping(self):  
+        newPage=TransformPage(self.unresolvedDict)
+        newPage.readEntries()
+        print("ping Mapping")
         
-    def defineMapping(self):
-        print("DefineMapping")
-        pass
-        
-    
     def clearUnresolvedFiles(self):
         self.unresolvedDict={}        
+
+class TransformPage:    
+    entryList=[]    
+    def __init__(self,unresolvedDict):        
+        window = Tk()
+        proceedButton = Button(window, text="Proceed", command=self.readEntries)
+        proceedButton.grid(row=len(unresolvedDict)+1, column=1, sticky=W, pady=10, padx=10)         
+        window.title("Would you like to Define Mapping for unresolved items?")
+        window.geometry('500x400') 
+        iteration=0
+        for key,val in unresolvedDict.items(): #Rows
+            Label(window,text=val).grid(row=iteration, column=0, sticky=W, padx=10, pady=10)
+            self.entryList.append(Entry(window))
+            self.entryList[iteration].grid(row=iteration, column=1, sticky=W, pady=10, padx=10)            
+            iteration+=1
+        window.mainloop()    
+    def readEntries(self):
+        for entry in self.entryList:
+            print(entry.get())    
    
 gui = GUI() 
 gui.window.title("Process Simulate Transformer")
-#gui.window.geometry('500x400')
+gui.window.geometry('500x400')
 gui.lbl = Label(gui.window, text="Please select JT files to be transformed")
 gui.lbl.grid(column=0, row=0, pady=20)
-
 selectFiles = Button(gui.window, text="Select Files", command=gui.openFiles)
 selectDirectory = Button(gui.window, text="Choose directory", command=gui.browseFolder)
 performTransformation= Button(gui.window, text="Transform", command=gui.transferFiles)
 selectFiles.grid(column=0, row=1,sticky=W, pady=5, padx=10)
 selectDirectory.grid(column=0, row=2,sticky=W, pady=5, padx=10)
 performTransformation.grid(column=0, row=3,sticky=W, pady=5, padx=10)
-mappingEntry = Entry()
-
-mappingEntry.grid(column=2, row=1, sticky=W, pady=0, padx=10)
 
 print(gui.projectPath)
 
